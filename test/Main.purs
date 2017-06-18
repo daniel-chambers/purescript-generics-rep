@@ -3,11 +3,13 @@ module Test.Main where
 import Prelude
 import Control.Monad.Eff (Eff)
 import Control.Monad.Eff.Console (CONSOLE, logShow)
+import Data.Enum (class Enum, pred, succ)
 import Data.Generic.Rep as G
+import Data.Generic.Rep.Bounded as GBounded
+import Data.Generic.Rep.Enum as GEnum
 import Data.Generic.Rep.Eq as GEq
 import Data.Generic.Rep.Ord as GOrd
 import Data.Generic.Rep.Show as GShow
-import Data.Generic.Rep.Bounded as GBounded
 
 data List a = Nil | Cons { head :: a, tail :: List a }
 
@@ -37,6 +39,10 @@ instance boundedSimpleBounded :: Bounded SimpleBounded where
   bottom = GBounded.genericBottom
   top = GBounded.genericTop
 
+instance enumSimpleBounded :: Enum SimpleBounded where
+  succ = GEnum.genericSucc
+  pred = GEnum.genericPred
+
 main :: Eff (console :: CONSOLE) Unit
 main = do
   logShow (cons 1 (cons 2 Nil))
@@ -51,3 +57,13 @@ main = do
   logShow (top :: SimpleBounded)
 
   logShow (G.from $ cons 1 Nil)
+
+  logShow (succ A)
+  logShow (succ B)
+  logShow (succ C)
+  logShow (succ D)
+
+  logShow (pred A)
+  logShow (pred B)
+  logShow (pred C)
+  logShow (pred D)
