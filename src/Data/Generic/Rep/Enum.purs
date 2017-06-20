@@ -32,14 +32,14 @@ instance genericEnumConstructor :: GenericEnum (Constructor name NoArguments) wh
 instance genericEnumSum :: (GenericEnum a, GenericEnum b) => GenericEnum (Sum a b) where
   genericEnum' = (Inl <$> genericEnum') <> (Inr <$> genericEnum')
 
-  genericSucc' (Recur (Inl a)) = Inr <$> genericSucc' ReadConstructor
-  genericSucc' (Recur (Inr a)) = Inr <$> genericSucc' (Recur a)
+  genericSucc' (Recur (Inl _)) = Inr <$> genericSucc' ReadConstructor
+  genericSucc' (Recur (Inr x)) = Inr <$> genericSucc' (Recur x)
   genericSucc' ReadConstructor = Inl <$> genericSucc' ReadConstructor
 
-  genericPred' (Recur (Inl a)) = Nothing
-  genericPred' (Recur (Inr a)) = case genericPred' (Recur a) of
+  genericPred' (Recur (Inl _)) = Nothing
+  genericPred' (Recur (Inr x)) = case genericPred' (Recur x) of
                                   Nothing  -> Inl <$> genericPred' ReadConstructor
-                                  (Just x) -> Just $ Inr x
+                                  (Just z) -> Just $ Inr z
   genericPred' ReadConstructor = Nothing
 
 genericSucc :: forall a rep. Generic a rep => GenericEnum rep => a -> Maybe a
